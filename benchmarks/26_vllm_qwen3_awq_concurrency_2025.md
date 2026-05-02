@@ -295,3 +295,11 @@ Collect at minimum: per-request prompt/output lengths, TTFT/ITL histograms, sche
 
 The immediate diagnostic question should be: are the high mean and p99 latencies caused by bursty scheduler/queueing stalls, KV-cache pressure, long-prefill interference, or backend/GPU underutilization? The current evidence supports saturation and tail amplification, but not a specific root cause.
 ```
+
+## Verdict Review
+
+Trace-on is better for this case.
+
+Both responses identify that throughput saturates while latency degrades under concurrency. The trace-on response is stronger because it names the change-point shape more precisely: load-scaling saturation, tail amplification, and mean/median divergence. It also preserves the key engineering distinction that high p99 and mean/median splits show uneven latency distribution, not proven root cause.
+
+The baseline response is directionally correct, but the trace-on response gives a performance engineer a cleaner diagnostic frame: throughput has already plateaued, user-visible latency is collapsing, and the next step should collect scheduler, queueing, KV-cache, request-shape, and GPU telemetry before assigning cause.

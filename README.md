@@ -134,7 +134,7 @@ Current detector families include:
 
 In the 25-case research benchmark, trace-on analysis beat or matched baseline analysis in every accepted case.
 
-The full raw-input/baseline/trace-on/review reports are in [benchmarks/](benchmarks/README.md). That directory currently includes 27 numbered reports: 25 overnight benchmark cases plus 2 earlier real-data reports used during development.
+The full raw-input/baseline/trace-on/review reports are in [benchmarks/](benchmarks/README.md). That directory currently includes 26 numbered reports: 25 benchmark cases plus one earlier real-data report used during development.
 
 Result after general detector updates:
 

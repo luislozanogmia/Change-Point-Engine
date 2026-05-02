@@ -16,10 +16,10 @@ The reports are included so reviewers can inspect what changed between raw-input
 
 ## What Was Used
 
-The set currently contains 27 complete reports:
+The set currently contains 26 complete reports:
 
-- 25 benchmark and incident cases from the overnight research set.
-- 2 earlier real-data reports used while developing and debugging the engine.
+- 25 benchmark and incident cases from the research set.
+- 1 earlier real-data report used while developing and debugging the engine.
 
 The cases were normalized into the engine's required CSV shape:
 
@@ -59,5 +59,3 @@ For benchmark tables, `timestamp` can be a condition label such as `baseline`, `
 | 24 | [Bun test runner regression](24_bun_23120_test_runner_regression.md) |
 | 25 | [Bun runtime regression](25_bun_17000_runtime_regression.md) |
 | 26 | [vLLM Qwen3 AWQ concurrency](26_vllm_qwen3_awq_concurrency_2025.md) |
-| 27 | [PyTorch and vLLM full prompts and outputs](27_pytorch_and_vllm_full_prompts_outputs.md) |
-
