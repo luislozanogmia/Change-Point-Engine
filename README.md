@@ -245,12 +245,13 @@ Potential next work:
 | Path | Purpose |
 |---|---|
 | `change_trace_engine.py` | Core 0-parameter trace engine and CLI |
-| `examples/` | Input/output examples, including the 25-case benchmark set and A/B reports |
+| `examples/` | Small runnable CSV inputs for quick local traces |
+| `benchmarks/` | Numbered A/B research reports with raw input, baseline response, trace-on response, and review verdict |
 | `tests/` | Unit tests and minimal CSV fixtures for detector families and edge cases |
 | `tools/build_case_prompts.py` | Research helper for A/B prompt generation |
 | `tools/github_case_harvest.py` | Research helper for finding public issue candidates |
 
-See [examples/README.md](examples/README.md) for the full input/output and A/B report index.
+See [examples/README.md](examples/README.md) for runnable sample inputs and [benchmarks/README.md](benchmarks/README.md) for the full A/B report index.
 
 ## License
 
