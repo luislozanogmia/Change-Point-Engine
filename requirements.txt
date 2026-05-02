@@ -1,0 +1,2 @@
+# No runtime dependencies.
+# The core engine uses only the Python standard library.

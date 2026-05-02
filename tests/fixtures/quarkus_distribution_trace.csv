@@ -1,0 +1,11 @@
+timestamp,service,metric,value
+q10,quarkus_multi,reactive_minus_resteasy_latency_delta_ms,-3.3
+q25,quarkus_multi,reactive_minus_resteasy_latency_delta_ms,-16.1
+q50,quarkus_multi,reactive_minus_resteasy_latency_delta_ms,-15.4
+q75,quarkus_multi,reactive_minus_resteasy_latency_delta_ms,-6.5
+q90,quarkus_multi,reactive_minus_resteasy_latency_delta_ms,41.8
+q95,quarkus_multi,reactive_minus_resteasy_latency_delta_ms,69.5
+q99,quarkus_multi,reactive_minus_resteasy_latency_delta_ms,145.2
+avg,quarkus_multi,reactive_minus_resteasy_average_delta_ms,0.8
+slowest,quarkus_multi,reactive_minus_resteasy_slowest_delta_ms,209.0
+resp_wait_slowest,quarkus_multi,reactive_minus_resteasy_resp_wait_slowest_delta_ms,208.7
