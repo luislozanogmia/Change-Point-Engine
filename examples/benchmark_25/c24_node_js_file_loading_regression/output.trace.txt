@@ -1,0 +1,42 @@
+--- CHANGE TRACE ---
+This trace surfaces evidence and candidate explanations. It does not decide root cause.
+
+DETECTOR ROUTE:
+  Data shape: benchmark_condition_table
+  Selected detectors: condition_delta
+  Evidence: 8 condition labels across 11 rows; treat rows as benchmark conditions, not continuous incident time
+
+SIGNAL BLOCKS:
+  [1] release_resolution_metadata: c24_node_js_file_loading_regression_slow_disk_date_fns.hyperfine_time_value_ms_ms at fixed_build, confidence=0.74
+      Evidence: version/release/fix labels are present; preserve introduced, regressed, reverted, fixed, or canary metadata alongside metric deltas
+      fixed: fixed_build
+      versions: v22_19_0, v25_1_0
+  [2] release_resolution_metadata: c24_node_js_file_loading_regression_slow_disk_ddtrace_cdk.hyperfine_time_value_ms_ms at fixed_build, confidence=0.74
+      Evidence: version/release/fix labels are present; preserve introduced, regressed, reverted, fixed, or canary metadata alongside metric deltas
+      fixed: fixed_build
+      versions: v22_19_0, v25_1_0
+  [3] release_resolution_metadata: c24_node_js_file_loading_regression_reporter_environment.load_time_value_ms_ms at v22_21_1_pre_plus_pr_60425, confidence=0.74
+      Evidence: version/release/fix labels are present; preserve introduced, regressed, reverted, fixed, or canary metadata alongside metric deltas
+      versions: v20_19_5, v21_4_0, v21_5_0, v22_21_1_pre, v22_21_1_pre_plus_pr_60425
+  [4] condition_delta: c24_node_js_file_loading_regression_reporter_environment.load_time_value_ms_ms at v22_21_1_pre (657.488 -> 4012.0), confidence=0.95
+      Evidence: load_time_value_ms_ms changes across benchmark conditions; min=657.5 at v21_4_0; max=4012 at v22_21_1_pre; ratio=6.10x; compare conditions before explaining cause
+  [5] condition_delta: c24_node_js_file_loading_regression_slow_disk_date_fns.hyperfine_time_value_ms_ms at v25_1_0 (699.7 -> 977.5), confidence=0.63
+      Evidence: hyperfine_time_value_ms_ms changes across benchmark conditions; min=699.7 at fixed_build; max=977.5 at v25_1_0; ratio=1.40x; compare conditions before explaining cause
+  [6] condition_delta: c24_node_js_file_loading_regression_slow_disk_ddtrace_cdk.hyperfine_time_value_ms_ms at v25_1_0 (3810.0 -> 7668.0), confidence=0.77
+      Evidence: hyperfine_time_value_ms_ms changes across benchmark conditions; min=3810 at v22_19_0; max=7668 at v25_1_0; ratio=2.01x; compare conditions before explaining cause
+  [7] version_fix_lineage: c24_node_js_file_loading_regression_slow_disk_date_fns.hyperfine_time_value_ms_ms at fixed_build, confidence=0.76
+      Evidence: versioned regression and fixed/canary conditions are present; preserve fix lineage alongside the timing delta
+  [8] version_fix_lineage: c24_node_js_file_loading_regression_slow_disk_ddtrace_cdk.hyperfine_time_value_ms_ms at fixed_build, confidence=0.76
+      Evidence: versioned regression and fixed/canary conditions are present; preserve fix lineage alongside the timing delta
+
+CANDIDATE CASCADES:
+  No cross-service timing cascade detected.
+
+OPTIONS FOR THE LLM TO WEIGH:
+  Option A: c24_node_js_file_loading_regression_slow_disk_date_fns.hyperfine_time_value_ms_ms has release/fix lineage; preserve versions, revert, fixed, and canary labels before explaining cause.
+  Option C: this is sparse benchmark evidence; preserve condition labels and deltas.
+  Option C: release/fix metadata can be the strongest resolution evidence.
+  Option D: detector output is incomplete; request more metrics if evidence is thin.
+
+GUARDRAIL:
+  Do not turn timing into causality without dependency, deploy, or resource evidence.

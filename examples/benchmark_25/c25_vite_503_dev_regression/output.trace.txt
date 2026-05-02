@@ -1,0 +1,32 @@
+--- CHANGE TRACE ---
+This trace surfaces evidence and candidate explanations. It does not decide root cause.
+
+DETECTOR ROUTE:
+  Data shape: benchmark_condition_table
+  Selected detectors: condition_delta
+  Evidence: 3 condition labels across 6 rows; treat rows as benchmark conditions, not continuous incident time
+
+SIGNAL BLOCKS:
+  [1] release_resolution_metadata: c25_vite_503_dev_regression.reported_slowdown_max_value_s_x at vite_5_0_3_vs_5_0_2, confidence=0.74
+      Evidence: version/release/fix labels are present; preserve introduced, regressed, reverted, fixed, or canary metadata alongside metric deltas
+      versions: vite_5_0_2, vite_5_0_3, vite_5_0_3_vs_5_0_2
+  [2] condition_delta: c25_vite_503_dev_regression.dev_page_load_time_max_value_s_seconds at vite_5_0_3 (2.0 -> 10.0), confidence=0.95
+      Evidence: dev_page_load_time_max_value_s_seconds changes across benchmark conditions; min=2 at vite_5_0_2; max=10 at vite_5_0_3; ratio=5.00x; compare conditions before explaining cause
+  [3] condition_delta: c25_vite_503_dev_regression.dev_page_load_time_min_value_s_seconds at vite_5_0_3 (1.5 -> 5.0), confidence=0.89
+      Evidence: dev_page_load_time_min_value_s_seconds changes across benchmark conditions; min=1.5 at vite_5_0_2; max=5 at vite_5_0_3; ratio=3.33x; compare conditions before explaining cause
+  [4] config_expansion: c25_vite_503_dev_regression.reported_slowdown_max_value_s_x at vite_5_0_3_vs_5_0_2, confidence=0.78
+      Evidence: reported_slowdown_max_value_s_x is 10x, indicating a material expansion/change in generated configuration
+  [5] config_expansion: c25_vite_503_dev_regression.reported_slowdown_min_value_s_x at vite_5_0_3_vs_5_0_2, confidence=0.78
+      Evidence: reported_slowdown_min_value_s_x is 3x, indicating a material expansion/change in generated configuration
+
+CANDIDATE CASCADES:
+  No cross-service timing cascade detected.
+
+OPTIONS FOR THE LLM TO WEIGH:
+  Option A: c25_vite_503_dev_regression.reported_slowdown_max_value_s_x has release/fix lineage; preserve versions, revert, fixed, and canary labels before explaining cause.
+  Option C: this is sparse benchmark evidence; preserve condition labels and deltas.
+  Option C: release/fix metadata can be the strongest resolution evidence.
+  Option D: detector output is incomplete; request more metrics if evidence is thin.
+
+GUARDRAIL:
+  Do not turn timing into causality without dependency, deploy, or resource evidence.

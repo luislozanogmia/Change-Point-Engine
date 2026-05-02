@@ -1,0 +1,33 @@
+--- CHANGE TRACE ---
+This trace surfaces evidence and candidate explanations. It does not decide root cause.
+
+DETECTOR ROUTE:
+  Data shape: timestamped_service_timeseries
+  Selected detectors: mean_shift, event_rate_shift, variance_shift, trend_shift, downstream_lag
+  Evidence: rows look like service metrics over ordered timestamps
+
+SIGNAL BLOCKS:
+  [1] event_rate_shift: envoy_perimeter.crash_restart_rate at 2025-04-16T12:25:00Z (0.0 -> 95.0), confidence=0.95
+      Evidence: event-rate median shifted from 0 to 95; score=31.67 using MAD-normalized delta
+  [2] mean_shift: perimeter.successful_requests_pct at 2025-04-16T12:25:00Z (99.0 -> 18.0), confidence=0.95
+      Evidence: rolling median shifted from 99 to 18; score=27.00 using MAD-normalized delta
+  [3] event_rate_shift: clients.retry_rate at 2025-04-16T12:30:00Z (35.0 -> 580.0), confidence=0.95
+      Evidence: event-rate median shifted from 35 to 580; score=18.17 using MAD-normalized delta
+  [4] event_rate_shift: kubernetes.oom_kill_rate at 2025-04-16T12:35:00Z (4.0 -> 70.0), confidence=0.95
+      Evidence: event-rate median shifted from 4 to 70; score=16.50 using MAD-normalized delta
+  [5] mean_shift: perimeter.p95_latency_ms at 2025-04-16T12:35:00Z (400.0 -> 2200.0), confidence=0.71
+      Evidence: rolling median shifted from 400 to 2200; score=5.81 using MAD-normalized delta
+
+CANDIDATE CASCADES:
+  envoy_perimeter.crash_restart_rate before kubernetes.oom_kill_rate (2025-04-16T12:25:00Z -> 2025-04-16T12:35:00Z)
+      Evidence: envoy_perimeter.crash_restart_rate changed before kubernetes.oom_kill_rate by 2 row(s); timing suggests a candidate cascade, not proof
+  envoy_perimeter.crash_restart_rate before perimeter.p95_latency_ms (2025-04-16T12:25:00Z -> 2025-04-16T12:35:00Z)
+      Evidence: envoy_perimeter.crash_restart_rate changed before perimeter.p95_latency_ms by 2 row(s); timing suggests a candidate cascade, not proof
+
+OPTIONS FOR THE LLM TO WEIGH:
+  Option A: envoy_perimeter.crash_restart_rate is the first visible event-rate shift.
+  Option B: later services are downstream symptoms of the first shift.
+  Option D: detector output is incomplete; request more metrics if evidence is thin.
+
+GUARDRAIL:
+  Do not turn timing into causality without dependency, deploy, or resource evidence.

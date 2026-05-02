@@ -1,0 +1,35 @@
+--- CHANGE TRACE ---
+This trace surfaces evidence and candidate explanations. It does not decide root cause.
+
+DETECTOR ROUTE:
+  Data shape: timestamped_service_timeseries
+  Selected detectors: mean_shift, event_rate_shift, variance_shift, trend_shift, downstream_lag
+  Evidence: rows look like service metrics over ordered timestamps
+
+SIGNAL BLOCKS:
+  [1] mean_shift: auth.signin_attempt_rate at 2025-08-28T14:58:00Z (120.0 -> 2100.0), confidence=0.95
+      Evidence: rolling median shifted from 120 to 2100; score=19.80 using MAD-normalized delta
+  [2] mean_shift: storage.cpu_pct at 2025-08-28T14:58:00Z (48.0 -> 96.0), confidence=0.95
+      Evidence: rolling median shifted from 48 to 96; score=16.00 using MAD-normalized delta
+  [3] event_rate_shift: backend_api.error_rate_pct at 2025-08-28T15:03:00Z (0.2 -> 2.1), confidence=0.64
+      Evidence: event-rate median shifted from 0.2 to 2.1; score=4.52 using MAD-normalized delta
+  [4] mean_shift: backend_api.p95_latency_ms at 2025-08-28T15:03:00Z (210.0 -> 1050.0), confidence=0.7
+      Evidence: rolling median shifted from 210 to 1050; score=5.60 using MAD-normalized delta
+  [5] mean_shift: cdc_consumer.lag_seconds at 2025-08-28T15:03:00Z (5.0 -> 240.0), confidence=0.57
+      Evidence: rolling median shifted from 5 to 240; score=3.36 using MAD-normalized delta
+
+CANDIDATE CASCADES:
+  storage.cpu_pct before backend_api.p95_latency_ms (2025-08-28T14:58:00Z -> 2025-08-28T15:03:00Z)
+      Evidence: storage.cpu_pct changed before backend_api.p95_latency_ms by 1 row(s); timing suggests a candidate cascade, not proof
+  storage.cpu_pct before backend_api.error_rate_pct (2025-08-28T14:58:00Z -> 2025-08-28T15:03:00Z)
+      Evidence: storage.cpu_pct changed before backend_api.error_rate_pct by 1 row(s); timing suggests a candidate cascade, not proof
+  storage.cpu_pct before cdc_consumer.lag_seconds (2025-08-28T14:58:00Z -> 2025-08-28T15:03:00Z)
+      Evidence: storage.cpu_pct changed before cdc_consumer.lag_seconds by 1 row(s); timing suggests a candidate cascade, not proof
+
+OPTIONS FOR THE LLM TO WEIGH:
+  Option A: auth.signin_attempt_rate is the first visible shift.
+  Option B: later services are downstream symptoms of the first shift.
+  Option D: detector output is incomplete; request more metrics if evidence is thin.
+
+GUARDRAIL:
+  Do not turn timing into causality without dependency, deploy, or resource evidence.

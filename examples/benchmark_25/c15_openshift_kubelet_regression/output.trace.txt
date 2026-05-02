@@ -1,0 +1,42 @@
+--- CHANGE TRACE ---
+This trace surfaces evidence and candidate explanations. It does not decide root cause.
+
+DETECTOR ROUTE:
+  Data shape: benchmark_condition_table
+  Selected detectors: condition_delta
+  Evidence: 8 condition labels across 12 rows; treat rows as benchmark conditions, not continuous incident time
+
+SIGNAL BLOCKS:
+  [1] fix_validation_window: c15_openshift_kubelet_regression.kubelet_cpu_usage_percent at after_fix, confidence=0.82
+      Evidence: baseline/regressed/fixed or reverted conditions are present; compare the full regression window before attributing cause
+  [2] phased_remediation: c15_openshift_kubelet_regression.pprof_cpu_time_percent at getallocationpods, confidence=0.74
+      Evidence: multiple after/post-remediation stages are present; preserve staged fixes and residual bottlenecks instead of collapsing to one before/after delta
+  [3] release_resolution_metadata: c15_openshift_kubelet_regression.pprof_cpu_time_percent at getallocationpods, confidence=0.74
+      Evidence: version/release/fix labels are present; preserve introduced, regressed, reverted, fixed, or canary metadata alongside metric deltas
+      baseline: baseline_high, baseline_low, baseline
+      regressed: regressed_high, regressed_low, regressed
+  [4] profile_hotspot: c15_openshift_kubelet_regression.kubelet_cpu_usage_percent_higher at regressed_high, confidence=0.78
+      Evidence: profile/hotspot counters appear with the regression evidence; inspect code-path attribution instead of only metric deltas
+  [5] mechanism_evidence: c15_openshift_kubelet_regression.pod_ready_latency_ms at after_fix, confidence=0.72
+      Evidence: named low-level mechanisms appear in the evidence; retain them as evidence labels without promoting them to root cause unless backed by profiling, bisection, or owner notes
+      mechanisms: pod
+  [6] condition_delta: c15_openshift_kubelet_regression.kubelet_cpu_usage_percent at baseline_low (20.0 -> 25.0), confidence=0.58
+      Evidence: kubelet_cpu_usage_percent changes across benchmark conditions; min=20 at baseline_low; max=25 at after_fix; ratio=1.25x; compare conditions before explaining cause
+  [7] condition_delta: c15_openshift_kubelet_regression.pod_ready_latency_ms at regressed (2000.0 -> 3000.0), confidence=0.66
+      Evidence: pod_ready_latency_ms changes across benchmark conditions; min=2000 at after_fix; max=3000 at regressed; ratio=1.50x; compare conditions before explaining cause
+  [8] condition_delta: c15_openshift_kubelet_regression.kubelet_cpu_usage_percent_higher at regressed_low (30.0 -> 35.0), confidence=0.55
+      Evidence: kubelet_cpu_usage_percent_higher changes across benchmark conditions; min=30 at regressed_low; max=35 at regressed_high; ratio=1.17x; compare conditions before explaining cause
+
+CANDIDATE CASCADES:
+  No cross-service timing cascade detected.
+
+OPTIONS FOR THE LLM TO WEIGH:
+  Option A: c15_openshift_kubelet_regression.kubelet_cpu_usage_percent sits inside a baseline/regressed/fixed window; preserve fix validation before explaining cause.
+  Option C: this is sparse benchmark evidence; preserve condition labels and deltas.
+  Option C: fix/revert validation can be stronger than a single regression point.
+  Option C: preserve named mechanisms as evidence labels, not automatic root cause.
+  Option C: release/fix metadata can be the strongest resolution evidence.
+  Option D: detector output is incomplete; request more metrics if evidence is thin.
+
+GUARDRAIL:
+  Do not turn timing into causality without dependency, deploy, or resource evidence.

@@ -1,0 +1,29 @@
+--- CHANGE TRACE ---
+This trace surfaces evidence and candidate explanations. It does not decide root cause.
+
+DETECTOR ROUTE:
+  Data shape: timestamped_service_timeseries
+  Selected detectors: mean_shift, event_rate_shift, variance_shift, trend_shift, downstream_lag
+  Evidence: rows look like service metrics over ordered timestamps
+
+SIGNAL BLOCKS:
+  [1] mean_shift: primary_database.p95_query_latency_ms at 2024-04-10T08:23:00Z (95.0 -> 2400.0), confidence=0.95
+      Evidence: rolling median shifted from 95 to 2400; score=23.05 using MAD-normalized delta
+  [2] mean_shift: primary_database.query_cpu_pct at 2024-04-10T08:23:00Z (42.0 -> 98.0), confidence=0.95
+      Evidence: rolling median shifted from 42 to 98; score=28.00 using MAD-normalized delta
+  [3] mean_shift: github_actions.workflow_delay_minutes at 2024-04-10T08:33:00Z (8.0 -> 38.0), confidence=0.66
+      Evidence: rolling median shifted from 8 to 38; score=5.00 using MAD-normalized delta
+
+CANDIDATE CASCADES:
+  primary_database.p95_query_latency_ms before github_actions.workflow_delay_minutes (2024-04-10T08:23:00Z -> 2024-04-10T08:33:00Z)
+      Evidence: primary_database.p95_query_latency_ms changed before github_actions.workflow_delay_minutes by 2 row(s); timing suggests a candidate cascade, not proof
+  primary_database.query_cpu_pct before github_actions.workflow_delay_minutes (2024-04-10T08:23:00Z -> 2024-04-10T08:33:00Z)
+      Evidence: primary_database.query_cpu_pct changed before github_actions.workflow_delay_minutes by 2 row(s); timing suggests a candidate cascade, not proof
+
+OPTIONS FOR THE LLM TO WEIGH:
+  Option A: primary_database.p95_query_latency_ms is the first visible shift.
+  Option B: later services are downstream symptoms of the first shift.
+  Option D: detector output is incomplete; request more metrics if evidence is thin.
+
+GUARDRAIL:
+  Do not turn timing into causality without dependency, deploy, or resource evidence.

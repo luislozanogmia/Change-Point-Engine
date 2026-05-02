@@ -1,0 +1,27 @@
+--- CHANGE TRACE ---
+This trace surfaces evidence and candidate explanations. It does not decide root cause.
+
+DETECTOR ROUTE:
+  Data shape: benchmark_condition_table
+  Selected detectors: condition_delta
+  Evidence: 11 condition labels across 20 rows; treat rows as benchmark conditions, not continuous incident time
+
+SIGNAL BLOCKS:
+  [1] control_plane_accumulation: c08_ray_tune_utilization_collapse.trial_count_total_count at total_grid_search_trials, confidence=0.8
+      Evidence: trial-count and low-utilization evidence appear together; inspect scheduler/control-plane work accumulating with completed or pending tasks
+  [2] phased_remediation: c08_ray_tune_utilization_collapse.choose_trial_to_run_warning_8_s at warning_sample, confidence=0.74
+      Evidence: multiple after/post-remediation stages are present; preserve staged fixes and residual bottlenecks instead of collapsing to one before/after delta
+  [3] capacity_underuse: c08_ray_tune_utilization_collapse.worker_utilization_after_degradation_percent at 6_busy_cpus_out_of_32_total_derived_from_visible_counts, confidence=0.78
+      Evidence: worker_utilization_after_degradation_percent is 18.75%, indicating low resource use despite active work
+  [4] capacity_underuse: c08_ray_tune_utilization_collapse.reported_utilization_upper_bound_percent at reporter_says_less_than_25_percent_busy, confidence=0.78
+      Evidence: reported_utilization_upper_bound_percent is 25%, indicating low resource use despite active work
+
+CANDIDATE CASCADES:
+  No cross-service timing cascade detected.
+
+OPTIONS FOR THE LLM TO WEIGH:
+  Option A: c08_ray_tune_utilization_collapse.trial_count_total_count is the first visible shift.
+  Option D: detector output is incomplete; request more metrics if evidence is thin.
+
+GUARDRAIL:
+  Do not turn timing into causality without dependency, deploy, or resource evidence.

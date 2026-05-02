@@ -1,0 +1,22 @@
+--- CHANGE TRACE ---
+This trace surfaces evidence and candidate explanations. It does not decide root cause.
+
+DETECTOR ROUTE:
+  Data shape: benchmark_regression_table
+  Selected detectors: cross_sectional_regression_outlier
+  Evidence: 6/30 rows are ratio metrics; treat rows as benchmark cases, not incident time
+
+SIGNAL BLOCKS:
+  [1] cross_sectional_regression_outlier: c04_pytorch_161878_cpu_inductor.ratio_speedup_new_old at batch_128 (1.0 -> 0.28), confidence=0.9
+      Evidence: 6/6 benchmark cases are below 0.80; 4 are below 0.50; median ratio=0.49; worst case=batch_128 value=0.28
+
+CANDIDATE CASCADES:
+  No cross-service timing cascade detected.
+
+OPTIONS FOR THE LLM TO WEIGH:
+  Option A: c04_pytorch_161878_cpu_inductor.ratio_speedup_new_old shows broad benchmark regression; inspect the worst case at batch_128.
+  Option C: this is a benchmark matrix; prioritize widespread regressions over one-off noise.
+  Option D: detector output is incomplete; request more metrics if evidence is thin.
+
+GUARDRAIL:
+  Do not turn timing into causality without dependency, deploy, or resource evidence.

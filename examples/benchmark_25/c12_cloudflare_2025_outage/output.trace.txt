@@ -1,0 +1,29 @@
+--- CHANGE TRACE ---
+This trace surfaces evidence and candidate explanations. It does not decide root cause.
+
+DETECTOR ROUTE:
+  Data shape: benchmark_condition_table
+  Selected detectors: condition_delta
+  Evidence: 16 condition labels across 16 rows; treat rows as benchmark conditions, not continuous incident time
+
+SIGNAL BLOCKS:
+  [1] release_resolution_metadata: c12_cloudflare_2025_outage.rollback_focus_time_hour_utc at 13_37_utc_rollback_focus, confidence=0.74
+      Evidence: version/release/fix labels are present; preserve introduced, regressed, reverted, fixed, or canary metadata alongside metric deltas
+      rollback: 13_37_utc_rollback_focus
+  [2] mechanism_evidence: c12_cloudflare_2025_outage.feature_limit_count at bot_management_runtime_feature_limit, confidence=0.72
+      Evidence: named low-level mechanisms appear in the evidence; retain them as evidence labels without promoting them to root cause unless backed by profiling, bisection, or owner notes
+      mechanisms: runtime
+  [3] config_expansion: c12_cloudflare_2025_outage.feature_file_size_multiplier_x at feature_file_doubled_in_size, confidence=0.78
+      Evidence: feature_file_size_multiplier_x is 2x, indicating a material expansion/change in generated configuration
+
+CANDIDATE CASCADES:
+  No cross-service timing cascade detected.
+
+OPTIONS FOR THE LLM TO WEIGH:
+  Option A: c12_cloudflare_2025_outage.rollback_focus_time_hour_utc has release/fix lineage; preserve versions, revert, fixed, and canary labels before explaining cause.
+  Option C: preserve named mechanisms as evidence labels, not automatic root cause.
+  Option C: release/fix metadata can be the strongest resolution evidence.
+  Option D: detector output is incomplete; request more metrics if evidence is thin.
+
+GUARDRAIL:
+  Do not turn timing into causality without dependency, deploy, or resource evidence.

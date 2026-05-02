@@ -1,0 +1,32 @@
+--- CHANGE TRACE ---
+This trace surfaces evidence and candidate explanations. It does not decide root cause.
+
+DETECTOR ROUTE:
+  Data shape: benchmark_condition_table
+  Selected detectors: condition_delta
+  Evidence: 4 condition labels across 10 rows; treat rows as benchmark conditions, not continuous incident time
+
+SIGNAL BLOCKS:
+  [1] profile_hotspot: c19_go_67585_runtime_mutex_regression.futex_syscalls_chancontended_count at regressed, confidence=0.78
+      Evidence: profile/hotspot counters appear with the regression evidence; inspect code-path attribution instead of only metric deltas
+  [2] release_resolution_metadata: c19_go_67585_runtime_mutex_regression.futex_syscalls_chancontended_count at regressed, confidence=0.74
+      Evidence: version/release/fix labels are present; preserve introduced, regressed, reverted, fixed, or canary metadata alongside metric deltas
+      regressed: regressed
+  [3] mechanism_evidence: c19_go_67585_runtime_mutex_regression.runtime_lock_cpu_gomaxprocs_88_cpu_seconds at regressed, confidence=0.72
+      Evidence: named low-level mechanisms appear in the evidence; retain them as evidence labels without promoting them to root cause unless backed by profiling, bisection, or owner notes
+      mechanisms: runtime, futex
+  [4] condition_delta: c19_go_67585_runtime_mutex_regression.chancontended_20_us_per_op at before (42.76 -> 82.1), confidence=0.75
+      Evidence: chancontended_20_us_per_op changes across benchmark conditions; min=42.76 at before; max=82.1 at after; ratio=1.92x; compare conditions before explaining cause
+
+CANDIDATE CASCADES:
+  No cross-service timing cascade detected.
+
+OPTIONS FOR THE LLM TO WEIGH:
+  Option A: c19_go_67585_runtime_mutex_regression.futex_syscalls_chancontended_count is the first visible shift.
+  Option C: this is sparse benchmark evidence; preserve condition labels and deltas.
+  Option C: preserve named mechanisms as evidence labels, not automatic root cause.
+  Option C: release/fix metadata can be the strongest resolution evidence.
+  Option D: detector output is incomplete; request more metrics if evidence is thin.
+
+GUARDRAIL:
+  Do not turn timing into causality without dependency, deploy, or resource evidence.

@@ -60,6 +60,12 @@ Run a trace:
 python3 change_trace_engine.py examples/perf_trace.csv
 ```
 
+Run one of the benchmark examples:
+
+```bash
+python3 change_trace_engine.py examples/benchmark_25/c07_triton_4379_response_cache/input.csv
+```
+
 Normalize a Datadog-style export:
 
 ```bash
@@ -231,10 +237,12 @@ Potential next work:
 | Path | Purpose |
 |---|---|
 | `change_trace_engine.py` | Core 0-parameter trace engine and CLI |
-| `examples/` | Small local CSV examples |
+| `examples/` | Input/output examples, including the 25-case benchmark set |
 | `tests/` | Unit tests and minimal CSV fixtures for detector families and edge cases |
 | `tools/build_case_prompts.py` | Research helper for A/B prompt generation |
 | `tools/github_case_harvest.py` | Research helper for finding public issue candidates |
+
+See [examples/README.md](examples/README.md) for the full input/output example index.
 
 ## License
 

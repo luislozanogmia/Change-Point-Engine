@@ -1,0 +1,36 @@
+--- CHANGE TRACE ---
+This trace surfaces evidence and candidate explanations. It does not decide root cause.
+
+DETECTOR ROUTE:
+  Data shape: benchmark_condition_table
+  Selected detectors: condition_delta
+  Evidence: 6 condition labels across 6 rows; treat rows as benchmark conditions, not continuous incident time
+
+SIGNAL BLOCKS:
+  [1] fix_validation_window: c23_kafka_producer_regression.throughput_value_records_per_second at confirmed_fixed, confidence=0.82
+      Evidence: baseline/regressed/fixed or reverted conditions are present; compare the full regression window before attributing cause
+  [2] release_resolution_metadata: c23_kafka_producer_regression.throughput_value_records_per_second at confirmed_fixed, confidence=0.74
+      Evidence: version/release/fix labels are present; preserve introduced, regressed, reverted, fixed, or canary metadata alongside metric deltas
+      baseline: baseline_pre_regression, confirmed_good_baseline
+      regressed: regressed
+      reverted: reverted
+      fixed: confirmed_fixed
+  [3] mechanism_evidence: c23_kafka_producer_regression.throughput_value_records_per_second at default_partitioner_test, confidence=0.72
+      Evidence: named low-level mechanisms appear in the evidence; retain them as evidence labels without promoting them to root cause unless backed by profiling, bisection, or owner notes
+      mechanisms: partitioner
+  [4] condition_delta: c23_kafka_producer_regression.throughput_value_records_per_second at default_partitioner_test (105000.0 -> 118000.0), confidence=0.55
+      Evidence: throughput_value_records_per_second changes across benchmark conditions; min=1.05e+05 at default_partitioner_test; max=1.18e+05 at confirmed_good_baseline; ratio=1.12x; compare conditions before explaining cause
+
+CANDIDATE CASCADES:
+  No cross-service timing cascade detected.
+
+OPTIONS FOR THE LLM TO WEIGH:
+  Option A: c23_kafka_producer_regression.throughput_value_records_per_second sits inside a baseline/regressed/fixed window; preserve fix validation before explaining cause.
+  Option C: this is sparse benchmark evidence; preserve condition labels and deltas.
+  Option C: fix/revert validation can be stronger than a single regression point.
+  Option C: preserve named mechanisms as evidence labels, not automatic root cause.
+  Option C: release/fix metadata can be the strongest resolution evidence.
+  Option D: detector output is incomplete; request more metrics if evidence is thin.
+
+GUARDRAIL:
+  Do not turn timing into causality without dependency, deploy, or resource evidence.

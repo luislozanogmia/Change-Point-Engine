@@ -1,0 +1,23 @@
+--- CHANGE TRACE ---
+This trace surfaces evidence and candidate explanations. It does not decide root cause.
+
+DETECTOR ROUTE:
+  Data shape: benchmark_condition_table
+  Selected detectors: condition_delta
+  Evidence: 4 condition labels across 4 rows; treat rows as benchmark conditions, not continuous incident time
+
+SIGNAL BLOCKS:
+  [1] cache_cardinality_shift: c07_triton_4379_response_cache_response_cache_size.value_numeric at response_cache_size, confidence=0.8
+      Evidence: cache workload contrasts repeated/hit-like inputs with random or unique inputs; preserve cache-cardinality and miss/eviction pressure before naming root cause
+      mechanisms: cache_cardinality, repeated_inputs, random_or_unique_inputs
+
+CANDIDATE CASCADES:
+  No cross-service timing cascade detected.
+
+OPTIONS FOR THE LLM TO WEIGH:
+  Option A: c07_triton_4379_response_cache_response_cache_size.value_numeric shows a cache-cardinality workload shift; compare repeated-hit and high-cardinality miss/eviction behavior.
+  Option C: repeated-input cache wins and unique-input degradation are different workloads.
+  Option D: detector output is incomplete; request more metrics if evidence is thin.
+
+GUARDRAIL:
+  Do not turn timing into causality without dependency, deploy, or resource evidence.
