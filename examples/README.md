@@ -35,6 +35,14 @@ Each case contains:
 
 These examples intentionally exclude raw issue dumps, prompts, evaluator outputs, and private working artifacts. They are meant to show how the engine routes different performance data shapes and what trace structure it produces.
 
+For the full A/B comparison format, use `examples/ab_reports/`. Those reports show:
+
+1. baseline prompt with raw public input only
+2. baseline model response
+3. trace-on prompt with the same raw input plus Change-Point trace
+4. trace-on model response
+5. review verdict
+
 | Case | Pattern Highlight |
 |---|---|
 | `c01_vllm_7592_scheduler_regression` | scheduler/control-plane regression |
@@ -63,3 +71,12 @@ These examples intentionally exclude raw issue dumps, prompts, evaluator outputs
 | `c28_bun_23120_test_runner_regression` | release-to-release test-runner regression |
 | `c29_bun_17000_runtime_regression` | runtime attribution gating |
 
+## A/B Reports
+
+The A/B reports are indexed here:
+
+```text
+examples/ab_reports/README.md
+```
+
+They include all 25 benchmark cases plus the earlier vLLM/PyTorch reports used while developing the engine.
