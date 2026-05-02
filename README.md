@@ -60,16 +60,16 @@ Run a trace:
 python3 change_trace_engine.py examples/perf_trace.csv
 ```
 
-Run one of the benchmark examples:
+Run one of the compact real-world-style examples:
 
 ```bash
-python3 change_trace_engine.py examples/benchmark_25/c07_triton_4379_response_cache/input.csv
+python3 change_trace_engine.py examples/real_world/spotify_2025_envoy_retry.csv
 ```
 
-Inspect the full A/B report for that case:
+Inspect the full A/B benchmark reports:
 
 ```text
-examples/ab_reports/benchmark_25/c07_triton_4379_response_cache.md
+benchmarks/README.md
 ```
 
 Normalize a Datadog-style export:
@@ -133,6 +133,8 @@ Current detector families include:
 ## What Worked
 
 In the 25-case research benchmark, trace-on analysis beat or matched baseline analysis in every accepted case.
+
+The full raw-input/baseline/trace-on/review reports are in [benchmarks/](benchmarks/README.md). That directory currently includes 27 numbered reports: 25 overnight benchmark cases plus 2 earlier real-data reports used during development.
 
 Result after general detector updates:
 
